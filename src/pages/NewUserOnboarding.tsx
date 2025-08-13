@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { useUpdateProfile } from '@/hooks/useSupabaseData';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface IdValidationResult {
   valid: boolean;
@@ -21,6 +22,7 @@ interface IdValidationResult {
 
 const NewUserOnboarding = () => {
   const navigate = useNavigate();
+  const { setIsNewUser } = useAuth(); // <-- get the setter
   const updateProfile = useUpdateProfile();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 8;
@@ -401,6 +403,7 @@ const NewUserOnboarding = () => {
       toast.success('Profile setup completed successfully!');
 
       setIsProcessing(false); // Set before navigation
+      setIsNewUser(false); // Mark user as not new
       navigate('/'); // Redirect to home after onboarding
       return;
     } catch (error: any) {
