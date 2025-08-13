@@ -44,7 +44,6 @@ function App() {
           <TooltipProvider>
             <div className="min-h-screen w-full bg-gray-50 overflow-x-hidden">
               <Routes>
-                <Route path="/welcome" element={<Welcome />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/new-user-onboarding" element={<NewUserOnboarding />} />
 
