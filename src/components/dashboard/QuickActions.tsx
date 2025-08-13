@@ -90,18 +90,16 @@ const QuickActions = () => {
         ))}
       </div>
       
-      {/* Replace Add New Record with Health Report */}
-      <Card
-        className="mt-3 cursor-pointer transition-all hover:shadow-md border-2 border-dashed border-[#2ecac8] bg-[#2ecac8]/5"
-        onClick={() => navigate("/report-landing")}
-      >
-        <CardContent className="p-4">
-          <div className="flex items-center justify-center space-x-3">
-            <FileText className="w-5 h-5 text-[#2ecac8]" />
-            <span className="font-medium text-[#2ecac8]">Health Report</span>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Styled Health Report Button */}
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={() => navigate("/report-landing")}
+          className="bg-gradient-to-r from-[#2ecac8] to-[#338886] hover:from-[#338886] hover:to-[#2ecac8] text-white px-8 py-4 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+        >
+          <FileText className="w-5 h-5" />
+          Health Report
+        </button>
+      </div>
     </div>
   );
 };
