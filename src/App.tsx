@@ -3,7 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
-import AuthListener from "./components/AuthListener";
+// import AuthListener from "./components/AuthListener";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navigation from "./components/Navigation";
 import Index from "./pages/Index";
@@ -40,12 +40,13 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
-          <AuthListener />
+          {/* <AuthListener /> */}
           <TooltipProvider>
             <div className="min-h-screen w-full bg-gray-50 overflow-x-hidden">
               <Routes>
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/new-user-onboarding" element={<NewUserOnboarding />} />
+                <Route path="/welcome" element={<Welcome />} />
 
                 {/* Protected routes with Navigation */}
                 <Route

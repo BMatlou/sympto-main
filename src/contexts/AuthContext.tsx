@@ -163,6 +163,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsNewUser,
   };
 
+  useEffect(() => {
+    console.log("AuthProvider: user", user, "loading", loading, "isNewUser", isNewUser);
+  }, [user, loading, isNewUser]);
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
