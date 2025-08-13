@@ -6,7 +6,6 @@ import MetricsGrid from "@/components/dashboard/MetricsGrid";
 import HealthInsights from "@/components/dashboard/HealthInsights";
 import BiometricLockPrompt from "@/components/BiometricLockPrompt";
 import QuickActions from "@/components/dashboard/QuickActions";
-import { Button } from "@/components/ui/Button";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
@@ -66,7 +65,7 @@ const Index = () => {
         {/* Health Score */}
         <HealthScore />
 
-        {/* Quick Actions */}
+        {/* Quick Actions (Health Report button is now inside QuickActions) */}
         <QuickActions />
 
         {/* Metrics Grid */}
@@ -75,15 +74,7 @@ const Index = () => {
         {/* Health Insights */}
         <HealthInsights />
 
-        {/* Health Report Button */}
-        <div className="pt-4">
-          <Button
-            onClick={() => navigate('/report-landing')}
-            className="bg-gradient-to-r from-[#2ecac8] to-[#338886] hover:from-[#338886] hover:to-[#2ecac8] text-white px-8 py-4 text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-          >
-            Health Report
-          </Button>
-        </div>
+        {/* Removed Health Report Button from here */}
       </div>
     </div>
   );

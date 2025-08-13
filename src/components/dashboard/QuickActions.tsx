@@ -1,7 +1,6 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Activity, Droplets, Utensils, Pill } from "lucide-react";
+import { Activity, Droplets, Utensils, Pill, FileText } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useSymptoms, useMedications, useWaterIntake } from "@/hooks/useSupabaseData";
 import { useNutritionLog } from "@/hooks/useNutrition";
@@ -91,14 +90,15 @@ const QuickActions = () => {
         ))}
       </div>
       
+      {/* Replace Add New Record with Health Report */}
       <Card
         className="mt-3 cursor-pointer transition-all hover:shadow-md border-2 border-dashed border-[#2ecac8] bg-[#2ecac8]/5"
-        onClick={() => navigate("/add")}
+        onClick={() => navigate("/report-landing")}
       >
         <CardContent className="p-4">
           <div className="flex items-center justify-center space-x-3">
-            <Plus className="w-5 h-5 text-[#2ecac8]" />
-            <span className="font-medium text-[#2ecac8]">Add New Record</span>
+            <FileText className="w-5 h-5 text-[#2ecac8]" />
+            <span className="font-medium text-[#2ecac8]">Health Report</span>
           </div>
         </CardContent>
       </Card>
