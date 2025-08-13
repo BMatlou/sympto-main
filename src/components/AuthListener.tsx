@@ -15,7 +15,6 @@ const AuthListener = () => {
       pathname: location.pathname 
     });
 
-    // Don't do anything while loading
     if (loading) {
       console.log("⏳ Still loading auth state...");
       return;
@@ -40,14 +39,18 @@ const AuthListener = () => {
         console.log("🆕 New user, needs onboarding");
         const onboardingRoutes = ["/onboarding", "/new-user-onboarding"];
         if (!onboardingRoutes.includes(location.pathname)) {
-          navigate("/new-user-onboarding", { replace: true }); // <-- updated
+          navigate("/new-user-onboarding", { replace: true });
         }
+        return;
       } else {
         console.log("✅ Returning user with complete profile");
-        const authRoutes = ["/welcome", "/auth", "/login", "/register", "/onboarding", "/personal-info", "/new-user-onboarding"];
+        const authRoutes = [
+          "/welcome", "/auth", "/login", "/register", "/onboarding", "/new-user-onboarding"
+        ];
         if (authRoutes.includes(location.pathname)) {
           navigate("/", { replace: true });
         }
+        return;
       }
     }
   }, [user, loading, isNewUser, location.pathname, navigate]);
