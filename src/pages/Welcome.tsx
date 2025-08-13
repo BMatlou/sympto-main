@@ -71,7 +71,7 @@ const Welcome = () => {
               Get Started Today
             </Button>
             <Button 
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/auth')}
               variant="outline"
               className="border-2 border-[#2ecac8] text-[#2ecac8] hover:bg-[#2ecac8] hover:text-white px-8 py-4 text-lg rounded-full transition-all duration-300"
             >
