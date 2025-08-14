@@ -18,7 +18,6 @@ const Auth = () => {
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Reset fields and validation when switching modes
   const handleModeSwitch = () => {
     setIsSignUp((prev) => !prev);
     setEmail("");
@@ -36,28 +35,28 @@ const Auth = () => {
       if (isSignUp) {
         if (!isPasswordValid) {
           toast.error("Please ensure your password meets all requirements");
+          setIsSubmitting(false);
           return;
         }
         if (password !== confirmPassword) {
           toast.error("Passwords don't match");
+          setIsSubmitting(false);
           return;
         }
         const { error } = await signUp(email.trim(), password);
         if (!error) {
+          toast.success("Account created! Please complete your profile.");
           navigate("/new-user-onboarding");
-          return;
         } else {
           toast.error(error.message || "Sign up failed");
-          return;
         }
       } else {
         const { error } = await signIn(email.trim(), password);
         if (!error) {
+          toast.success("Signed in successfully!");
           navigate("/");
-          return;
         } else {
           toast.error(error.message || "Sign in failed");
-          return;
         }
       }
     } catch (error) {
