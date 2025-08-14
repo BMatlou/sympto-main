@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, User, MapPin, Shield } from "lucide-react";
+import { ChevronLeft, ChevronRight, User, MapPin, Shield, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -320,6 +320,7 @@ const NewUserOnboarding = () => {
       // Update user profile with improved error handling
       console.log('Updating user profile...');
       const profileData = {
+        id: user.id, // <-- Ensure this is included!
         full_name: formData.full_name,
         id_number: formData.document_type === 'id' ? formData.id_number : null,
         passport_number: formData.document_type === 'passport' ? formData.passport_number : null,
@@ -814,6 +815,13 @@ const NewUserOnboarding = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-emerald-50 p-4">
       <div className="max-w-md mx-auto">
+        {/* Logo/Header */}
+        <div className="flex items-center justify-center mb-8">
+          <div className="bg-gradient-to-r from-[#2ecac8] to-[#338886] p-4 rounded-2xl shadow-lg">
+            <Heart className="w-12 h-12 text-white" />
+          </div>
+        </div>
+
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
