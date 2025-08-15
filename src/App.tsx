@@ -2,8 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
-// import AuthListener from "./components/AuthListener";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navigation from "./components/Navigation";
 import Index from "./pages/Index";
@@ -40,49 +39,25 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
-          {/* <AuthListener /> */}
           <TooltipProvider>
             <div className="min-h-screen w-full bg-gray-50 overflow-x-hidden">
               <Routes>
+                {/* Public Routes */}
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/new-user-onboarding" element={<NewUserOnboarding />} />
-                <Route path="/" element={<Navigate to="/welcome" replace />} />
                 <Route path="/welcome" element={<Welcome />} />
 
-                {/* Protected routes with Navigation */}
+                {/* Root redirect based on auth */}
+                <Route path="/" element={<RootRedirect />} />
+
+                {/* Protected Routes */}
                 <Route
                   path="*"
                   element={
-                    <>
-                      <ProtectedRoute>
-                        <Routes>
-                          <Route path="/" element={<Index />} />
-                          <Route path="/profile" element={<Profile />} />
-                          <Route path="/settings" element={<Settings />} />
-                          <Route path="/add" element={<Add />} />
-                          <Route path="/symptoms" element={<Symptoms />} />
-                          <Route path="/medications" element={<Medications />} />
-                          <Route path="/calendar" element={<Calendar />} />
-                          <Route path="/insights" element={<Insights />} />
-                          <Route path="/vitals" element={<Vitals />} />
-                          <Route path="/water" element={<Water />} />
-                          <Route path="/activity" element={<Activity />} />
-                          <Route path="/nutrition" element={<Nutrition />} />
-                          <Route path="/devices" element={<Devices />} />
-                          <Route path="/symptom/:id" element={<SymptomDetail />} />
-                          <Route path="/symptom-recommendations" element={<SymptomRecommendations />} />
-                          <Route path="/book-appointment" element={<BookAppointment />} />
-                          <Route path="/book-appointment-landing" element={<BookAppointmentLanding />} />
-                          <Route path="/report-landing" element={<ReportLanding />} />
-                          <Route path="/export-report" element={<ExportReport />} />
-                          <Route path="/add-record" element={<AddRecord />} />
-                          <Route path="/manual-data-entry" element={<ManualDataEntry />} />
-                          <Route path="/steps-input" element={<StepsInput />} />
-                          <Route path="*" element={<NotFound />} />
-                        </Routes>
-                        <Navigation />
-                      </ProtectedRoute>
-                    </>
+                    <ProtectedRoute>
+                      <AppRoutes />
+                      <Navigation />
+                    </ProtectedRoute>
                   }
                 />
               </Routes>
@@ -92,6 +67,44 @@ function App() {
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
+  );
+}
+
+function RootRedirect() {
+  const { user, authLoading } = useAuth();
+
+  if (authLoading) return <div>Loading...</div>;
+
+  return user ? <Navigate to="/index" replace /> : <Navigate to="/welcome" replace />;
+}
+
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/index" element={<Index />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/settings" element={<Settings />} />
+      <Route path="/add" element={<Add />} />
+      <Route path="/symptoms" element={<Symptoms />} />
+      <Route path="/medications" element={<Medications />} />
+      <Route path="/calendar" element={<Calendar />} />
+      <Route path="/insights" element={<Insights />} />
+      <Route path="/vitals" element={<Vitals />} />
+      <Route path="/water" element={<Water />} />
+      <Route path="/activity" element={<Activity />} />
+      <Route path="/nutrition" element={<Nutrition />} />
+      <Route path="/devices" element={<Devices />} />
+      <Route path="/symptom/:id" element={<SymptomDetail />} />
+      <Route path="/symptom-recommendations" element={<SymptomRecommendations />} />
+      <Route path="/book-appointment" element={<BookAppointment />} />
+      <Route path="/book-appointment-landing" element={<BookAppointmentLanding />} />
+      <Route path="/report-landing" element={<ReportLanding />} />
+      <Route path="/export-report" element={<ExportReport />} />
+      <Route path="/add-record" element={<AddRecord />} />
+      <Route path="/manual-data-entry" element={<ManualDataEntry />} />
+      <Route path="/steps-input" element={<StepsInput />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 
