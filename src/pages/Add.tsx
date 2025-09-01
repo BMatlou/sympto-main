@@ -14,6 +14,8 @@ import { useAddHealthMetric } from "@/hooks/useHealthMetrics";
 import { useAddWaterIntake } from "@/hooks/useWaterIntake";
 import { useAddMedicationReminder } from "@/hooks/useMedicationTracking";
 import MedicationInfo from "@/components/MedicationInfo";
+import SymptomSearch from "@/components/SymptomSearch";
+import { supabase } from '../supabaseClient';
 import { toast } from "sonner";
 
 const Add = () => {
@@ -159,25 +161,58 @@ const Add = () => {
       console.error('Error adding medication:', error);
     }
   };
+const handleMedicalRecordSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  console.log('Submitting medical record...');
 
-  const handleMedicalRecordSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!medicalRecordData.title || !medicalRecordData.record_type) {
-      toast.error('Please fill in required fields');
+  if (!medicalRecordData.title || !medicalRecordData.record_type) {
+    toast.error('Please fill in required fields');
+    return;
+  }
+
+  try {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError || !userData.user) {
+      console.error('User retrieval error:', userError);
+      toast.error('User not authenticated');
       return;
     }
+    const userId = userData.user.id;
+    console.log('User ID:', userId);
 
-    try {
-      let fileUrl = null;
-      if (medicalRecordData.file) {
-        const uploadResult = await uploadFile.mutateAsync({
-          file: medicalRecordData.file,
-          folder: 'medical-records'
-        });
-        fileUrl = uploadResult.publicUrl;
+    let fileUrl: string | null = null;
+
+    if (medicalRecordData.file) {
+      const fileName = `${Date.now()}_${medicalRecordData.file.name}`;
+      console.log('Uploading file:', fileName);
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('medical-records')
+        .upload(fileName, medicalRecordData.file);
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        toast.error(`File upload failed: ${uploadError.message}`);
+        return;
+      }
+      console.log('File uploaded successfully:', uploadData);
+
+      const { data: signedData, error: signedError } = await supabase.storage
+        .from('medical-records')
+        .createSignedUrl(fileName, 60 * 60);
+
+      if (signedError) {
+        console.error('Signed URL error:', signedError);
+        toast.error(`Failed to generate file URL: ${signedError.message}`);
+        return;
       }
 
-      await addMedicalRecord.mutateAsync({
+      fileUrl = signedData.signedUrl;
+      console.log('Signed URL generated:', fileUrl);
+    }
+
+    const { error: insertError } = await supabase.from('medical_records').insert([
+      {
         title: medicalRecordData.title,
         record_type: medicalRecordData.record_type,
         description: medicalRecordData.description,
@@ -187,21 +222,33 @@ const Add = () => {
         file_url: fileUrl,
         file_name: medicalRecordData.file?.name || null,
         file_size: medicalRecordData.file?.size || null,
-      });
+        user_id: userId,
+      },
+    ]);
 
-      setMedicalRecordData({
-        title: '',
-        record_type: '',
-        description: '',
-        doctor_name: '',
-        facility_name: '',
-        date_of_record: '',
-        file: null
-      });
-    } catch (error) {
-      console.error('Error adding medical record:', error);
+    if (insertError) {
+      console.error('Database insert error:', insertError);
+      toast.error(`Failed to add medical record: ${insertError.message}`);
+      return;
     }
-  };
+
+    toast.success('Medical record added!');
+    setMedicalRecordData({
+      title: '',
+      record_type: '',
+      description: '',
+      doctor_name: '',
+      facility_name: '',
+      date_of_record: '',
+      file: null,
+    });
+
+    navigate('/medical-records');
+  } catch (err) {
+    console.error('Unexpected error:', err);
+    toast.error('Failed to add medical record');
+  }
+};
 
   const handleHealthMetricSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
